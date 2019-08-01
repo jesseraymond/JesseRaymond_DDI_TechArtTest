@@ -1,22 +1,33 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ShowPopup : MonoBehaviour
+public class ShowPopup : LeftMenuButton
 {
-    // TODO Several things are preventing the popup from working
-    // TODO Debug the problems, and for extra credit minimize future human error and maximize flexbility
-    public Animator popupAnimator;
-    public Button button;
+    public Animator popupAnimator; // Set in the Inspector
 
-    void Start ()
+    protected override void OnClick()
     {
-        button.onClick.AddListener (() => Toggle ());
+        base.OnClick();
+        Toggle();
     }
 
-    void Toggle ()
+    private void Toggle ()
     {
-        popupAnimator.SetTrigger ("Toggle");
+        // Reduced human error by limiting redundant typing of string-dependent functionality (less chances for typos)
+        popupAnimator.SetTrigger(MethodBase.GetCurrentMethod().Name);
+    }
+
+    public override object CopyScriptToGeneratedGameObject()
+    {
+        object copy = base.CopyScriptToGeneratedGameObject();
+        if (copy is ShowPopup showPopup)
+        {
+            showPopup.popupAnimator = popupAnimator;
+        }
+
+        return base.CopyScriptToGeneratedGameObject();
     }
 }
